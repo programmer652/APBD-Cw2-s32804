@@ -9,7 +9,7 @@ public interface IService
     List<Equipment> GetAvailableEquipment();
 
     void Borrow(User user, Equipment equipment, int days);
-    void Return(Equipment equipment);
+    void Return(Loan loan);
 
     void MarkUnavailable(Equipment equipment);
 

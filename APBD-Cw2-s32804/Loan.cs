@@ -2,6 +2,13 @@ namespace APBD_Cw2_s32804;
 
 public class Loan
 {
+    public Loan(User user, Equipment equipment, int durationDays)
+    {
+        User = user;
+        Equipment = equipment;
+        DurationDays = durationDays;
+        BorrowDate =  DateTime.Now;
+    }
     public User User { get; set; }
     public Equipment Equipment { get; set; }
 
