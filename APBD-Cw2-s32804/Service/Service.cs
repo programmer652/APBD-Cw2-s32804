@@ -28,15 +28,15 @@ public class Service : IService
 
     public void Borrow(User user, Equipment equipment, int days)
     {
-        if (GetLateLoans().Count == 2 & user.GetType() == typeof(Student))
+        if (loans.Count(l => l.User == user) == 2 & user is Student)
         {
-            throw new Exception("Student already has 2 active loans");
+            Console.WriteLine("Student already has 2 active loans");
             return;
         }
 
-        if (GetLateLoans().Count == 5 & user.GetType() == typeof(Employee))
+        if (loans.Count(l => l.User == user) == 5 & user is Employee)
         {
-            throw new Exception("Employee already has 5 active loans");
+            Console.WriteLine("Employee already has 5 active loans");
             return;
         }
 
@@ -46,16 +46,16 @@ public class Service : IService
             loans.Add(new Loan(user, equipment, days));
         }
         else
-            throw new Exception("Not available");
+            Console.WriteLine("Not available");
     }
 
     public void Return(Loan loan)
     {
         loan.ReturnDate = DateTime.Now;
        
-        if (loan.IsReturnedOnTime)
+        if (!loan.IsReturnedOnTime)
         {
-            int daysLate = (DateTime.Now.Subtract(loan.ReturnDate.Value).Days);
+            int daysLate = (loan.ReturnDate.Value - loan.DueDate).Days;
             Console.WriteLine("late return by: " + daysLate);
             Console.WriteLine("User needs to pay additionally: " + (daysLate*10)+" zlotys");
         }
@@ -75,7 +75,9 @@ public class Service : IService
 
     public List<Loan> GetLateLoans()
     {
-        return loans.Where(l => !l.IsReturnedOnTime).ToList();
+        return loans.Where(l => 
+            l.ReturnDate != null && !l.IsReturnedOnTime
+        ).ToList();
     }
 
     public void GenerateReport()
