@@ -56,8 +56,8 @@ public class Service : IService
         if (loan.IsReturnedOnTime)
         {
             int daysLate = (DateTime.Now.Subtract(loan.ReturnDate.Value).Days);
-            Console.WriteLine("late return by: " + daysLate);
-            Console.WriteLine("User needs to pay additionally: " + (daysLate*10)+" zlotys");
+            Console.WriteLine("late return by: " + daysLate);// late fee rule = daysLate*20 zlotys
+            Console.WriteLine("User needs to pay additionally: " + (daysLate*20)+" zlotys");
         }
         loan.Equipment.IsAvailable = true;
         
@@ -78,13 +78,18 @@ public class Service : IService
         return loans.Where(l => !l.IsReturnedOnTime).ToList();
     }
 
+    public List<Loan> GetActiveLoans()
+    {
+        return loans.Where(l => l.ReturnDate == null).ToList();
+    }
+    
     public void GenerateReport()
     {
         Console.WriteLine("Generating report");
         Console.WriteLine("Users: "+users.Count);
         Console.WriteLine("Equipments: "+equipmentList.Count);
         Console.WriteLine("Loans: "+loans.Count);
-        Console.WriteLine("Active loans: "+loans.Count(l => l.ReturnDate == null));
+        Console.WriteLine("Active loans: "+GetActiveLoans().Count);
         Console.WriteLine("Late loans: "+GetLateLoans().Count);
     }
 }
